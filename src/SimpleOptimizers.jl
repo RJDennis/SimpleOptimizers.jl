@@ -16,8 +16,8 @@ include("quadratic_interpolation.jl")
 
 export newton_raphson,
        constrained_newton_raphson,
-       BFGS,
-       constrained_BFGS,
+       bfgs,
+       constrained_bfgs,
        nelder_mead,
        genetic_search,
        pattern_search,
