@@ -13,6 +13,7 @@ include("mesh_search.jl")
 include("hooke_jeeves.jl")
 include("luus_jaakola.jl")
 include("quadratic_interpolation.jl")
+include("conjugate_gradient.jl")
 
 export newton_raphson,
        constrained_newton_raphson,
@@ -24,6 +25,7 @@ export newton_raphson,
        mesh_search,
        hooke_jeeves,
        luus_jaakola,
-       quadratic_interpolation
+       quadratic_interpolation,
+       conjugate_gradient
 
 end
