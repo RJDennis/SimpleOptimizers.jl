@@ -11,7 +11,7 @@ include("genetic_search.jl")
 include("pattern_search.jl")
 include("mesh_search.jl")
 include("hooke_jeeves.jl")
-include("luus_jaaskola.jl")
+include("luus_jaakola.jl")
 include("quadratic_interpolation.jl")
 
 export newton_raphson,
@@ -23,7 +23,7 @@ export newton_raphson,
        pattern_search,
        mesh_search,
        hooke_jeeves,
-       luus_jaaskola,
+       luus_jaakola,
        quadratic_interpolation
 
 end
