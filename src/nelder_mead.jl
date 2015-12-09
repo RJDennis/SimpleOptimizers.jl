@@ -31,7 +31,7 @@ function compute_reflection_point{T<:AbstractFloat,S<:Integer}(f::Function,y::Ar
 
 end
 
-function nelder_mead{T<:AbstractFloat,S<:Integer}(f::Function,b0::Array{T,1},tol::T,maxiters::S;step::T=0.1)
+function nelder_mead{T<:AbstractFloat,S<:Integer}(f::Function,b0::Array{T,1},tol::T,maxiters::S,step::T=0.1)
 
   # Some initializations
 
