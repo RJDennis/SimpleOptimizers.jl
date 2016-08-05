@@ -1,6 +1,6 @@
 function select_pair(p)
 
-  i = ceil(p*rand(1,2))
+  i = rand(1:p,2)
   if i[1]==i[2]
     i = select_pair(p)
   end
@@ -14,12 +14,10 @@ function shuffle_crossover(n,parent1,parent2)
   parent1 = copy(parent1)
   parent2 = copy(parent2)
 
-  bd = round(Int,rand(n,1))
+  bd = round(Int,rand(n))
   for i = 1:n
     if bd[i] == 1
-      temp = parent1[i]
-      parent1[i] = parent2[i]
-      parent2[i] = temp
+      parent1[i], parent2[i] = parent2[i], parent1[i]
     end
   end
 
@@ -29,7 +27,7 @@ end
 
 function arithmetic_crossover(parent1,parent2)
 
-  c = rand(1)[1]
+  c = rand()
   p1 = c*parent1     + (1-c)*parent2
   p2 = (1-c)*parent1 + c*parent2
 
@@ -42,10 +40,8 @@ function single_point_crossover(n,parent1,parent2)
   parent1 = copy(parent1)
   parent2 = copy(parent2)
 
-  cut = round(Int,ceil((n-1)*rand(1))[1])
-  temp = parent1[cut+1:n]
-  parent1[cut+1:n] = parent2[cut+1:n]
-  parent2[cut+1:n] = temp
+  cut = rand(1:(n-1))
+  parent1[cut+1:n], parent2[cut+1:n] = parent2[cut+1:n], parent1[cut+1:n]
 
   return parent1,parent2
 
@@ -53,9 +49,9 @@ end
 
 function crossover(phi,n,parent1,parent2)
 
-  cross = rand(1)[1]
+  cross = rand()
   if cross < phi
-    method = round(Int,ceil(3*rand(1))[1])
+    method = rand(1:3)
     if method == 1
       (c1,c2) = shuffle_crossover(n,parent1,parent2)
     elseif method == 2
@@ -90,11 +86,11 @@ end
 function mutation(coef,iters,maxiters)
 
   mu = 0.15 + 0.33/iters
-  if rand(1)[1] < mu
+  if rand() < mu
     b = 2.0
-    r1 = rand(1)[1]
-    r2 = rand(1)[1]
-    s  = randn(1)[1]
+    r1 = rand()
+    r2 = rand()
+    s  = randn()
     if r1 > 0.5
       coef = coef + s*(1.0-(r2^((1.0-iters/maxiters)^b)))
     else
@@ -191,4 +187,3 @@ function genetic_search(f,x,d,m,tol,maxiters)
   return x,f,retcode
 
 end
-
