@@ -5,7 +5,7 @@ function select_pair(p)
     i = select_pair(p)
   end
 
-  return collect(i)
+  return i
 
 end
 
