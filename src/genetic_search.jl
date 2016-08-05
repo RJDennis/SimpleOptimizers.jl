@@ -14,7 +14,7 @@ function shuffle_crossover(n,parent1,parent2)
   parent1 = copy(parent1)
   parent2 = copy(parent2)
 
-  bd = round(Int,rand(n))
+  bd = rand(0:1,n)
   for i = 1:n
     if bd[i] == 1
       parent1[i], parent2[i] = parent2[i], parent1[i]
