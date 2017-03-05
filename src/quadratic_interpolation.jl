@@ -2,20 +2,17 @@ function quadratic_interpolation{T<:AbstractFloat,S<:Integer}(f::Function,x::Arr
 
   n = length(x)
 
-  const lambda = 0.4
+  lambda = 0.4
 
   x0 = x
-  x0_n = Array(T,n)
-
-  retcode = true
+  x0_n = Array{T}(n)
 
   iters = 0
-  while true
+  len = Inf
+  while len > tol
 
     h = d.*eye(n)
-
     for i = 1:n
-
       while true
 
         x1 = x0 + h[:,i]
@@ -26,48 +23,32 @@ function quadratic_interpolation{T<:AbstractFloat,S<:Integer}(f::Function,x::Arr
         f2 = f(x2)
 
         if f2 < f1 && f1 < f0 # Move further in this direction
-
-         h[i,i] = 2*h[i,i]
-
+          h[i,i] = 2*h[i,i]
         elseif f2 > f1 && f1 > f0 # Move in the opposite direction and decrease step in case at the minimum already
-
           h[i,i] = -0.5*h[i,i]
-
         elseif f2 < f1 && f1 > f0 # Have gone too far, or need to jump over a local maximum
-
           if f2 < f0
             x0_n[i] = x2
           else
             h[i,i] = lambda*h[i,i]
           end
-
         else # Ideal situation, update x[i]
-
           x0_n[i] = x0[i]+h[i,i]*(4*f1-3*f0-f2)/(4*f1-2*f0-2*f2)
           break
-
         end
-
       end
-
     end
+
+    len = maximum(abs,x0_n-x0)
+    x0 = copy(x0_n)
 
     iters += 1
-
-    len = maxabs(x0_n-x0)
-    x0 = x0_n
-
-    if len < tol
-      break
-    end
-
-    if iters == maxiters
-      retcode = false
+    if iters >= maxiters
       break
     end
 
   end
 
-  return x0, f(x0), retcode
+  return x0, f(x0), iters
 
 end

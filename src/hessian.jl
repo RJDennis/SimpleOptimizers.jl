@@ -2,9 +2,9 @@ function hessian{T<:AbstractFloat}(f::Function,x::Array{T,1})
 
   m = length(x)
 
-	e = eps(T)^(1/4)*maxabs([x;one(T)])
+	e = eps(T)^(1/4)*maximum(abs,[x;one(T)])
 	dh = eye(m)*e
-  hess = Array(T,m,m)
+  hess = Array{T}(m,m)
 
   for i = 1:m
 	  f1 = f(x+2*dh[:,i])

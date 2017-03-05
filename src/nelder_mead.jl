@@ -1,13 +1,14 @@
-function construct_initial_simplex{T<:AbstractFloat,S<:Integer}(x::Array{T,1},step::T,n::S)
+function construct_initial_simplex{T<:AbstractFloat}(x::Array{T,1},step_size::T)
 
-  p   = Array(T,n,n+1)
-  inc = Array(T,n)
+  n   = length(x)
+  p   = Array{T}(n,n+1)
+  inc = Array{T}(n)
 
   for i = 1:n
 	  if x[i] == 0.0
-	    inc[i] = step
+	    inc[i] = step_size
 		else
-		  inc[i] = step*x[i]
+		  inc[i] = step_size*x[i]
 		end
 	end
 
@@ -31,7 +32,7 @@ function compute_reflection_point{T<:AbstractFloat,S<:Integer}(f::Function,y::Ar
 
 end
 
-function nelder_mead{T<:AbstractFloat,S<:Integer}(f::Function,b0::Array{T,1},step::T,tol::T,maxiters::S)
+function nelder_mead{T<:AbstractFloat,S<:Integer}(f::Function,x::Array{T,1},step_size::T,tol::T,maxiters::S)
 
   # Some initializations
 
@@ -39,17 +40,17 @@ function nelder_mead{T<:AbstractFloat,S<:Integer}(f::Function,b0::Array{T,1},ste
   const beta  = 0.5
   const gam   = 2.0
 
-  n       = length(b0)
-	x       = Array(T,n)
+  n       = length(x)
+	x       = Array{T}(n)
 	f_opt   = 0.0
 
 	# Construct the initial simplex
 
-  p = construct_initial_simplex(b0,step,n)
+  p = construct_initial_simplex(x,step_size)
 
 	# Evaluate the function at each vertex
 
-  y = Array(T,n+1)
+  y = Array{T}(n+1)
 
   for i = 1:(n+1)
 	  y[i] = f(p[:,i])
@@ -107,27 +108,26 @@ function nelder_mead{T<:AbstractFloat,S<:Integer}(f::Function,b0::Array{T,1},ste
     mean_p = mean(p,2)
 	  for i = 1:n
 	    for j = 1:(n+1)
-		    len = maxabs([len,(p[i,j]-mean_p[i])])
+		    len = maximum(abs,[len,(p[i,j]-mean_p[i])])
 		  end
 	  end
 
 	  iters += 1
 
     if len < tol
-	    x       = collect(mean_p)  # collect() is to convert x to 1d array
-	    f_opt   = mean(y)
+	    x     = collect(mean_p)  # collect() is to convert x to 1d array
+	    f_opt = mean(y)
 		  break
     end
 
     if iters == maxiters
 	    x       = collect(mean_p)  # collect() is to convert x to 1d array
 	    f_opt   = mean(y)
-	    retcode = false
 		  break
 		end
 
   end
 
-	return x, f_opt, retcode
+	return x, f_opt, iters
 
 end

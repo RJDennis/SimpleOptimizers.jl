@@ -1,13 +1,11 @@
 function luus_jaakola{T<:AbstractFloat,S<:Integer}(f::Function,x::Array{T,1},d::Array{T,1},range::Array{T,2},tol::T,maxiters::S)
 
-  const lambda = 0.95
+  lambda = 0.95
 
   n = length(x)
 
-  iters   = 0
-  retcode = true
   len = Inf
-
+  iters   = 0
   while true
 
     for i = 1:n
@@ -19,25 +17,23 @@ function luus_jaakola{T<:AbstractFloat,S<:Integer}(f::Function,x::Array{T,1},d::
     y = x - d + 2*z.*d
 
     if f(y) < f(x)
-      len = maxabs([x-y; f(y)-f(x)])
+      len = maximum(abs,[x-y; f(y)-f(x)])
       x = y
     else
       d = lambda*d
     end
 
-    iters += 1
-
     if len < tol
       break
     end
 
-    if iters == maxiters
-      retcode = false
+    iters += 1
+    if iters >= maxiters
       break
     end
 
   end
 
-  return x, f(x), retcode
+  return x, f(x), iters
 
 end

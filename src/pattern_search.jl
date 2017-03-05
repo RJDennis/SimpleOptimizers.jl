@@ -1,59 +1,48 @@
-function pattern_search{T<:AbstractFloat,S<:Integer}(f::Function,x::Array{T,1},d::Array{T,1},tol::T,maxiters::S)
+function pattern_search{T<:AbstractFloat}(f::Function,x::Array{T,1},h::Array{T,1},tol::T,maxiters::Integer)
 
-  n = length(x)
+  x_new = similar(x)
+  f0    = f(x)
 
-  const lambda = 0.5
-
-  retcode = true
-
-  # Create initial step-lengths
-
-  dh = zeros(T,n,n)
-  for i = 1:n
-    dh[i,i] = d[i]
-  end
-
-  x_old = x
+  lambda = 0.5
 
   iters = 0
-  while true
+  len = Inf
+  while len > tol
 
-    for i = 1:n
+    for i = 1:length(x)
 
-      if f(x+dh[:,i]) < f(x) && f(x+dh[:,i]) < f(x-dh[:,i])
-        step = 1
-        while f(x+(step+1)*dh[:,i]) < f(x+step*dh[:,i])
-          step += 1
+      x_new[i] = x[i] + h[i]
+      if f(x_new) < f0
+        f0 = f(x_new)
+      else
+        x_new[i] = x[i] - h[i]
+        if f(x_new) < f0
+          f0 = f(x_new)
+        else
+          x_new[i] = x[i]
         end
-        x += step*dh[:,i]
-      elseif f(x-dh[:,i]) < f(x) && f(x-dh[:,i]) <= f(x+dh[:,i])
-        step = -1
-        while f(x+(step-1)*dh[:,i]) < f(x+step*dh[:,i])
-          step += -1
-        end
-        x += step*dh[:,i]
       end
 
     end
 
-    len = maxabs(x-x_old)
-
-    x_old = x
-    dh = lambda*dh
-
-    iters += 1
-
-    if maxabs([len;diag(dh)]) < tol
-      break
+    if x_new == x
+      h = lambda*h
+    else
+      d = x_new-x
+      alpha = line_search(f,x,d)
+      x_new = x + alpha*d
     end
 
-    if iters == maxiters
-      retcode = false
+    len = maximum(abs,h)
+    x = copy(x_new)
+
+    iters += 1
+    if iters >= maxiters
       break
     end
 
   end
 
-  return x, f(x), retcode
+  return x, f(x), iters
 
 end

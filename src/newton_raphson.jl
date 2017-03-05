@@ -1,35 +1,26 @@
-function newton_raphson{T<:AbstractFloat}(f::Function,b0::Array{T,1},tol::T,maxiters::Integer)
+function newton_raphson(f::Function,x::Array{Float64,1},tol::Float64,maxiters::Int64)
 
-  iters = 0
-  retcode = true
-  n = length(b0)
-	b0_n = similar(b0)
+	x_new = similar(x)
 
-  while true
+  iter = 0
+  len = Inf
+  while len > tol
 
-    g = derivative(f,b0)
-    h = hessian(f,b0)
+    g = derivative(f,x)
+    h = hessian(f,x)
 
-		update = h\g'
-		for i = 1:n
-		  b0_n[i] = b0[i] - update[i]
-		end
+    x_new = x - vec(h\g')
 
-    if maxabs([(b0-b0_n);g']) < tol
+    len = maximum(abs,x_new-x)
+    x = copy(x_new)
+
+    iter += 1
+    if iter >= maxiters
       break
     end
-
-    if iters == maxiters
-      retcode = false
-      break
-    end
-
-    b0 = b0_n
-    iters += 1
 
   end
 
-  return b0, f(b0), retcode
+  return x_new, f(x_new), iter
 
 end
-

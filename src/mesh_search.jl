@@ -2,7 +2,7 @@ function mesh_search{T<:AbstractFloat,S<:Integer}(f::Function,x::Array{T,1},step
 
   x = copy(x)
   n = length(x)
-  d = Array(T,n)
+  d = Array{T}(n)
 
   for i = 1:n
 	  if x[i] == 0.0
@@ -50,7 +50,7 @@ function mesh_search{T<:AbstractFloat,S<:Integer}(f::Function,x::Array{T,1},step
 
     # Determine if a minimum has been found
 
-    if maxabs(x_new-x) < tol
+    if maximum(abs,x_new-x) < tol
       break
     end
     x = x_new
@@ -63,7 +63,6 @@ function mesh_search{T<:AbstractFloat,S<:Integer}(f::Function,x::Array{T,1},step
       break
     end
 
-
     # Construct the new d vector
 
     for j = 1:n
@@ -72,7 +71,7 @@ function mesh_search{T<:AbstractFloat,S<:Integer}(f::Function,x::Array{T,1},step
 
   end
 
-  return x, f(x), retcode
+  return x, f(x), iters
 
 end
 
@@ -120,7 +119,7 @@ function mesh_search{T<:AbstractFloat,S<:Integer}(f::Function,x::Array{T,1},d::A
 
     # Determine if a minimum has been found
 
-    if maxabs(x_new-x) < tol
+    if maximum(abs,x_new-x) < tol
       break
     end
     x = x_new
@@ -141,6 +140,6 @@ function mesh_search{T<:AbstractFloat,S<:Integer}(f::Function,x::Array{T,1},d::A
 
   end
 
-  return x, f(x), retcode
+  return x, f(x), iters
 
 end

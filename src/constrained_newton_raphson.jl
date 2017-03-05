@@ -1,40 +1,37 @@
-function constrained_newton_raphson{T<:AbstractFloat}(f::Function,b0::Array{T,1},b0_lower::Array{T,1},b0_upper::Array{T,1},tol::T,maxiters::Integer)
+function constrained_newton_raphson{T<:AbstractFloat}(f::Function,x::Array{T,1},x_lower::Array{T,1},x_upper::Array{T,1},tol::T,maxiters::Integer)
 
-  iters   = 0
-  retcode = true
   n = length(b0)
-  b0_n = similar(b0)
+  x_new = similar(x)
 
-  while true
+  iters = 0
+  len   = Inf
 
-    g = derivative(f,b0)
-    h = hessian(f,b0)
-    update = h\g'
+  while len > tol
+
+    g = derivative(f,x)
+    h = hessian(f,x)
+    update = vec(h\g')
 
     for i = 1:n
-	    b0_n[i] = b0[i] - update[i]
-      if b0_n[i] > b0_upper[i]
-        b0_n[i] = b0_upper[i]
+	    x_new[i] = x[i] - update[i]
+      if x_new[i] > x_upper[i]
+        x_new[i] = x_upper[i]
       end
-      if b0_n[i] < b0_lower[i]
-        b0_n[i] = b0_lower[i]
+      if x_new[i] < x_lower[i]
+        x_new[i] = x_lower[i]
       end
     end
 
-    if maxabs([(b0-b0_n);g']) < tol
-      break
-    end
+    len = maximum(abs,x_new-x)
+    x = copy(x_new)
 
-    if iters == maxiters
-      retcode = false
-      break
-    end
-
-    b0 = b0_n
     iters += 1
+    if iters >= maxiters
+      break
+    end
 
   end
 
-  return b0, f(b0), retcode
+  return x, f(x), iters
 
 end
