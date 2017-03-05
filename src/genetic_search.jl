@@ -1,7 +1,7 @@
 function select_pair(p)
 
   i = rand(1:p,2)
-  if i[1]==i[2]
+  if i[1] == i[2]
     i = select_pair(p)
   end
 
@@ -21,7 +21,7 @@ function shuffle_crossover(n,parent1,parent2)
     end
   end
 
-  return parent1,parent2
+  return parent1, parent2
 
 end
 
@@ -31,7 +31,7 @@ function arithmetic_crossover(parent1,parent2)
   p1 = c*parent1     + (1-c)*parent2
   p2 = (1-c)*parent1 + c*parent2
 
-  return p1,p2
+  return p1, p2
 
 end
 
@@ -43,7 +43,7 @@ function single_point_crossover(n,parent1,parent2)
   cut = rand(1:(n-1))
   parent1[cut+1:n], parent2[cut+1:n] = parent2[cut+1:n], parent1[cut+1:n]
 
-  return parent1,parent2
+  return parent1, parent2
 
 end
 
@@ -64,7 +64,7 @@ function crossover(phi,n,parent1,parent2)
     c2 = parent2
   end
 
-  return c1,c2
+  return c1, c2
 
 end
 
@@ -167,7 +167,7 @@ function genetic_search(f,x,d,m,tol,maxiters)
     g1 = elitism(g0,g1,n)
 
     iters += 1
-    if maxabs(mean(g0,2)-mean(g1,2)) < tol
+    if maximum(abs,mean(g0,2)-mean(g1,2)) < tol
       g0 = copy(g1)
       break
     end
@@ -184,6 +184,6 @@ function genetic_search(f,x,d,m,tol,maxiters)
   x = g0[1:n,indmin(g0[n+1,:])]
   f = g0[n+1,indmin(g0[n+1,:])]
 
-  return x,f,retcode
+  return x,f,iters
 
 end
