@@ -36,12 +36,12 @@ function nelder_mead{T<:AbstractFloat,S<:Integer}(f::Function,x::Array{T,1},step
 
   # Some initializations
 
-  const alpha = 1.0
-  const beta  = 0.5
-  const gam   = 2.0
+  alpha = 1.0
+  beta  = 0.5
+  gam   = 2.0
 
   n       = length(x)
-	x       = Array{T}(n)
+	x_new   = Array{T}(n)
 	f_opt   = 0.0
 
 	# Construct the initial simplex
@@ -86,9 +86,9 @@ function nelder_mead{T<:AbstractFloat,S<:Integer}(f::Function,x::Array{T,1},step
       pc1 = pbar-beta*(pbar-p[:,index_worst])
       pc2 = pbar+beta*(pbar-p[:,index_worst])
       if f(pc1) < f(pc2)
-        pc = pc1
+        pc = copy(pc1)
       else
-        pc = pc2
+        pc = copy(pc2)
       end
       yc = f(pc)
 		  if yc < y[index_worst]                            # Do contraction
@@ -112,22 +112,21 @@ function nelder_mead{T<:AbstractFloat,S<:Integer}(f::Function,x::Array{T,1},step
 		  end
 	  end
 
-	  iters += 1
-
     if len < tol
-	    x     = collect(mean_p)  # collect() is to convert x to 1d array
+	    x_new  = vec(mean_p)  # vec() is to convert x to 1d array
 	    f_opt = mean(y)
 		  break
     end
 
-    if iters == maxiters
-	    x       = collect(mean_p)  # collect() is to convert x to 1d array
+    iters += 1
+    if iters >= maxiters
+	    x_new   = vec(mean_p)  # vec() is to convert x to 1d array
 	    f_opt   = mean(y)
 		  break
 		end
 
   end
 
-	return x, f_opt, iters
+	return x_new, f_opt, iters
 
 end
