@@ -29,7 +29,7 @@ function pattern_search{T<:AbstractFloat}(f::Function,x::Array{T,1},h::Array{T,1
       h = lambda*h
     else
       d = x_new-x
-      alpha = line_search(f,x,d)
+      alpha = line_search_simple(f,x,d)
       x_new = x + alpha*d
     end
 
