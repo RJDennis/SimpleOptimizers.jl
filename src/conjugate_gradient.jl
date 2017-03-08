@@ -1,4 +1,4 @@
-function conjugate_gradient{T<:AbstractFloat}(f::Function,x::Array{T,1},tol::T,maxiters::Integer;method::AbstractString="FR")
+function conjugate_gradient{T<:AbstractFloat}(f::Function,x::Array{T,1},tol::T,maxiters::Integer,method="FR")
 
   x_new = similar(x)
 
