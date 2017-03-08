@@ -1,7 +1,7 @@
 function luus_jaakola{T<:AbstractFloat,S<:Integer}(f::Function,x::Array{T,1},d::Array{T,1},seed::S,tol::T,maxiters::S)
 
   # d is the radius of the initial search area about the initial x
-  # maxiters should be large, especially if is chosen to be too small
+  # maxiters should be large, especially if d is chosen to be too small
 
   srand(seed)
 
